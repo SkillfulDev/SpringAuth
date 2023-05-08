@@ -24,7 +24,7 @@ public class Person {
     @NotNull(message="Это поле не может быть пустым")
     @Size(min = 2, max =100,message = "Миниманая длина имени должна быть минимум 2 символа")
     @Column (name="username")
-    private String userName;
+    private String username;
 
     @NotNull
     @Min(value = 1920, message="Год рождения должен быть больше чем 1920")
