@@ -3,20 +3,18 @@ package ua.chernonog.springauth.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ua.chernonog.springauth.services.PersonDetailsService;
-@EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+import java.util.Collections;
+
+@Configuration
+public class SecurityConfig {
 
     private final PersonDetailsService personDetailsService;
 
@@ -25,13 +23,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.personDetailsService = personDetailsService;
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(personDetailsService);
+    @Bean
+    public AuthenticationManager authenticationManager() throws Exception {
+        return new ProviderManager(Collections.singletonList(authenticationProvider()));
     }
 
     @Bean
-    public PasswordEncoder getPasswordEncoder() {
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(personDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
 }

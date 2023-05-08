@@ -10,11 +10,12 @@ import lombok.*;
 import java.util.Calendar;
 
 @Entity
-@Table(name = "Person")
+@Table(name = "person")
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 public class Person {
     @Id
     @Column(name="id")
