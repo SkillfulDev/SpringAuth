@@ -1,16 +1,19 @@
 package ua.chernonog.springauth.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+
+import java.util.Calendar;
 
 @Entity
 @Table(name = "Person")
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 public class Person {
     @Id
@@ -19,7 +22,17 @@ public class Person {
     private int id;
 
     @NotNull(message="Это поле не может быть пустым")
-    @Min(value = 2,message = "Миниманая длина имени должна быть минимум 2 символа")
+    @Size(min = 2, max =100,message = "Миниманая длина имени должна быть минимум 2 символа")
     @Column (name="username")
     private String userName;
+
+    @NotNull
+    @Min(value = 1920, message="Год рождения должен быть больше чем 1920")
+    @Max(value=2023, message="Год рождения не может быть больше текущего года" )
+    @Column(name="year_of_birth")
+    private int yearOfBirth;
+
+    @NotNull
+    @Column(name="password")
+    private String password;
 }
